@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  flask:
+    container_name: flask_container
+    build: 
+      context: .
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+  
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - C:\Users\nicol\source\repos\ABIChallenge_Nicolas-Caicedo:/var/lib/postgresql/data
