@@ -1,0 +1,43 @@
+name: Continuous Training Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature1
+      - feature2
+  pull_request:
+    branches:
+      - main
+      - develop
+      - feature1
+      - feature2
+
+jobs:
+  train_model:
+    name: Train ML Model
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Train model
+        run: |
+          python model.py
+          
+      - name: Upload trained model
+        uses: actions/upload-artifact@v2
+        with:
+          name: trained-model
+          path: model.pkl
