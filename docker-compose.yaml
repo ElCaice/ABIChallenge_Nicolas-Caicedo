@@ -11,7 +11,8 @@ services:
       - "5000:5000"
   
   db:
-    image: postgres:14
+    container_name: database_container
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_DB: mydatabase
@@ -20,4 +21,4 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - C:\Users\nicol\source\repos\ABIChallenge_Nicolas-Caicedo:/var/lib/postgresql/data
+      - C:\Users\nicol\source\repos\ABIChallenge_Nicolas-Caicedo:/var/lib/postgresql/data1
