@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://myuser:1234@db:5432/mydatabase'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-swagger = Swagger(app)
+swagvger = Swagger(app)
 
 # Prediccion class is in charge of the definition of formatting data entries (predictions) to the DB (Hosted on Postgresql container)
 class Prediccion(db.Model):
@@ -55,12 +55,16 @@ def predict():
     print('Model columns loaded')
     if lr:
             json_ = request.json
+            num_valores = len(json_)
             print(json_)
-            query = pd.get_dummies(pd.DataFrame(json_, index=[0]))
+            query = pd.get_dummies(pd.DataFrame(json_))
             query = query.reindex(columns=model_columns, fill_value=0)
             prediccioncalc = list(lr.predict(query))
-            dato_in=Prediccion(prediction=bool(prediccioncalc[0]))
-            db.session.add(dato_in)
+            datos_in = []
+            for i in range(num_valores):
+                dato_in = Prediccion(prediction=bool(prediccioncalc[i]))
+                db.session.add(dato_in)
+                datos_in.append(dato_in)
             db.session.commit()
             return jsonify({'prediction': str(prediccioncalc)})
     else:
