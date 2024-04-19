@@ -57,11 +57,15 @@ def predict():
             json_ = request.json
             num_valores = len(json_)
             print(json_)
+            print({'Campos detectados': str(num_valores)})
             query = pd.get_dummies(pd.DataFrame(json_))
             query = query.reindex(columns=model_columns, fill_value=0)
             prediccioncalc = list(lr.predict(query))
+            tot_predicciones=len(prediccioncalc)
             datos_in = []
-            for i in range(num_valores):
+            #if len(prediccioncalc) >= num_valores:
+            for i in range(tot_predicciones):
+                print(i)
                 dato_in = Prediccion(prediction=bool(prediccioncalc[i]))
                 db.session.add(dato_in)
                 datos_in.append(dato_in)
