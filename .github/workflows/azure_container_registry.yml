@@ -1,0 +1,34 @@
+name: Continuous Delivery to Azure Container Registry and Web App
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build_and_push_container:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: <nombre_del_registro>.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+        
+    - name: Build and push Docker image to Azure Container Registry
+      run: |
+        docker build -t regabichallenge.azurecr.io/flask_container:latest .
+        docker push regabichallenge.azurecr.io/flask_container:latest
+
+    - name: Restart Azure Web App
+      uses: Azure/webapps-deploy@v2
+      with:
+        app-name: ABIChallengeApp
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        resource-group: ABIChallenge_Group
